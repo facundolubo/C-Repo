@@ -1,0 +1,12 @@
+
+
+// Initialize an empty linked list
+void initializeList(struct listAlumnos* list) {
+    list->head = NULL;
+    list->tail = NULL;
+    list->length = 0;
+	for (int = 0; i< MAX_ALUMNOS; i+) {
+		struct alumno alu = readAlumno()
+		insertAtBeginning(&listAlumnos)
+	}
+}
