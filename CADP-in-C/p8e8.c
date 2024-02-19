@@ -20,38 +20,25 @@ Nota: La distribución de alumnos debe ser lo más equitativa posible.
 #define MAX_ALUMNOS 128
 
 // Define the structure for a student
-struct alumno {
+
+typedef struct alumno {
     int dni[8];
     char name[MAX_NAME_LENGTH];
     int score;
-};
+}; alumno;
 
 // Define the structure for a node in the linked list
-struct alumnoNode {
+typedef struct alumnoNode {
     struct alumno data;
     struct alumnoNode* next;
-};
+}; alumnoNode;
 
 // Define the structure for a linked list of students
-struct listAlumnos {
+typedef struct listAlumnos {
     struct alumnoNode* head;
     struct alumnoNode* tail;
     int length;
-};
-
-
-
-// Function to create a new node
-struct alumnoNode* createAlumnoNode(struct alumno data) {
-    struct alumnoNode* newNode = (struct alumnoNode*)malloc(sizeof(struct alumnoNode));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(EXIT_FAILURE);
-    }
-    newNode->data = data;
-    newNode->next = NULL;
-    return newNode;
-}
+}; listAlumnos;
 
 // Function to generate a random integer between min and max
 int getRandomInt(int min, int max) {
@@ -70,22 +57,23 @@ void getRandomName(char *name) {
 }
 
 // Function to read Alumno record with random values
-alumno  readAlumno(struct Alumno *alumno) {
+alumno readAlumno(struct Alumno *alumno) {
     alumno->dni = getRandomInt(0, 8); // Random DNI between 10^7 and 10^8 - 1
     getRandomName(alumno->name); // Generate random name
     alumno->score = getRandomInt(0, 100); // Random score between 0 and 100
 	return alumno 
 }
 
-// Initialize an empty linked list
-void initializeList(struct listAlumnos* list) {
-    list->head = NULL;
-    list->tail = NULL;
-    list->length = 0;
-	for (int = 0; i< MAX_ALUMNOS; i+) {
-		struct alumno alu = readAlumno()
-		insertAtBeginning(&listAlumnos)
-	}
+// Function to create a new node
+struct alumnoNode* createAlumnoNode(struct alumno data) {
+    struct alumnoNode* newNode = (struct alumnoNode*)malloc(sizeof(struct alumnoNode));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
 }
 
 // Function to insert a node at the beginning of the linked list
@@ -114,10 +102,21 @@ void insertAtEnd(struct listAlumnos* list, struct alumno data) {
     list->length++;
 }
 
+// Initialize an empty linked list
+void createList(struct listAlumnos* list) {
+    list->head = NULL;
+    list->tail = NULL;
+    list->length = 0;
+	for (int = 0; i< MAX_ALUMNOS; i+) {
+		struct alumno alu = readAlumno()
+		insertAtBeginning(&listAlumnos)
+	}
+}
+
 // Function to initialize the array of shifts
 void initializeTurnos(struct listAlumnos turnos[MAX_CURSOS]) {
     for (int i = 0; i < MAX_CURSOS; i++) {
-        initializeList(&turnos[i]);
+        createList(&turnos[i]);
     }
 }
 
@@ -137,7 +136,7 @@ calcTurnos() {
 int main() {
     struct listAlumnos turnos[MAX_CURSOS];
 
-	initializeList(listAlumnos)
+	createList(listAlumnos)
 
     // Initialize the array of shifts
     initializeTurnos(turnos);
