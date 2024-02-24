@@ -1,44 +1,31 @@
-/*
- *
- *
- La cátedra de CADP está organizando la cursada para el año 2019. Para ello, dispone de una lista con
-todos los alumnos que cursaron EPA. De cada alumno se conoce su DNI, apellido, nombre y la nota obtenida.
-Escribir un programa que procese la información de alumnos disponible y los distribuya en turnos utilizando
-los siguientes criterios:
-- Los alumnos que obtuvieron al menos 8 en EPA deberán ir a los turnos 1 ó 4.
-- Los alumnos que obtuvieron entre 5 y 8 deberán ir a los turnos 2, 3 ó 5.
-- Los alumnos que no alcanzaron la nota 5 no se les asignará turno en CADP.
-Al finalizar, el programa debe imprimir en pantalla la lista de alumnos para cada turno.
-Nota: La distribución de alumnos debe ser lo más equitativa posible.
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_NAME_LENGTH 64
 #define MAX_CURSOS 5 // Maximum number of shifts
 #define MAX_ALUMNOS 128
+#define TRUE 1
+#define FALSE 0
 
 // Define the structure for a student
-
 typedef struct alumno {
-    int dni[8];
+    int dni[10]; // Assuming 10-digit DNI
     char name[MAX_NAME_LENGTH];
     int score;
-}; alumno;
+} Alumno; // Use 'struct' keyword for clarity
 
 // Define the structure for a node in the linked list
 typedef struct alumnoNode {
-    struct alumno data;
+    Alumno data;
     struct alumnoNode* next;
-}; alumnoNode;
+} AlumnoNode;
 
 // Define the structure for a linked list of students
 typedef struct listAlumnos {
-    struct alumnoNode* head;
-    struct alumnoNode* tail;
+    AlumnoNode* head;
+    AlumnoNode* tail;
     int length;
-}; listAlumnos;
+} ListAlumnos;
 
 // Function to generate a random integer between min and max
 int getRandomInt(int min, int max) {
@@ -57,16 +44,19 @@ void getRandomName(char *name) {
 }
 
 // Function to read Alumno record with random values
-alumno readAlumno(struct Alumno *alumno) {
-    alumno->dni = getRandomInt(0, 8); // Random DNI between 10^7 and 10^8 - 1
-    getRandomName(alumno->name); // Generate random name
-    alumno->score = getRandomInt(0, 100); // Random score between 0 and 100
-	return alumno 
+Alumno readAlumno() {
+    Alumno alumno;
+    for (int i = 0; i < 10; i++) {
+        alumno.dni[i] = getRandomInt(0, 8); // Random DNI between 0 and 8
+    }
+    getRandomName(alumno.name); // Generate random name
+    alumno.score = getRandomInt(0, 10); // Random score between 0 and 10
+    return alumno;
 }
 
 // Function to create a new node
-struct alumnoNode* createAlumnoNode(struct alumno data) {
-    struct alumnoNode* newNode = (struct alumnoNode*)malloc(sizeof(struct alumnoNode));
+AlumnoNode* createAlumnoNode(Alumno data) {
+    AlumnoNode* newNode = (AlumnoNode*)malloc(sizeof(AlumnoNode));
     if (newNode == NULL) {
         printf("Memory allocation failed!\n");
         exit(EXIT_FAILURE);
@@ -77,82 +67,127 @@ struct alumnoNode* createAlumnoNode(struct alumno data) {
 }
 
 // Function to insert a node at the beginning of the linked list
-void insertAtBeginning(struct listAlumnos* list, struct alumno data) {
-    struct alumnoNode* newNode = createAlumnoNode(data);
-    if (list->head == NULL) {
-        list->head = newNode;
-        list->tail = newNode;
+void insertAtBeginning(ListAlumnos* lAlu, Alumno data) {
+    AlumnoNode* newNode = createAlumnoNode(data);
+    if (lAlu->head == NULL) {
+        lAlu->head = newNode;
+        lAlu->tail = newNode;
     } else {
-        newNode->next = list->head;
-        list->head = newNode;
+        newNode->next = lAlu->head;
+        lAlu->head = newNode;
     }
-    list->length++;
+    lAlu->length++;
 }
 
 // Function to insert a node at the end of the linked list
-void insertAtEnd(struct listAlumnos* list, struct alumno data) {
-    struct alumnoNode* newNode = createAlumnoNode(data);
-    if (list->head == NULL) {
-        list->head = newNode;
-        list->tail = newNode;
+void insertAtEnd(ListAlumnos* lAlu, Alumno data) {
+    AlumnoNode* newNode = createAlumnoNode(data);
+    if (lAlu->head == NULL) {
+        lAlu->head = newNode;
+        lAlu->tail = newNode;
     } else {
-        list->tail->next = newNode;
-        list->tail = newNode;
+        lAlu->tail->next = newNode;
+        lAlu->tail = newNode;
     }
-    list->length++;
+    lAlu->length++;
 }
 
 // Initialize an empty linked list
-void createList(struct listAlumnos* list) {
-    list->head = NULL;
-    list->tail = NULL;
-    list->length = 0;
-	for (int = 0; i< MAX_ALUMNOS; i+) {
-		struct alumno alu = readAlumno()
-		insertAtBeginning(&listAlumnos)
-	}
-}
-
-// Function to initialize the array of shifts
-void initializeTurnos(struct listAlumnos turnos[MAX_CURSOS]) {
-    for (int i = 0; i < MAX_CURSOS; i++) {
-        createList(&turnos[i]);
+void createList(ListAlumnos* lAlu, int len) {
+    lAlu->head = NULL;
+    lAlu->tail = NULL;
+    lAlu->length = len;
+    for (int i = 0; i < len; i++) {
+        Alumno alu = readAlumno();
+        insertAtBeginning(lAlu, alu);
     }
 }
 
-// Function to load the list of students from input
-void loadList() {
-    // Code to read students from input and insert them into the list
-	readAlumno
+// Function to initialize the array of shifts
+void initializeTurnos(ListAlumnos turnos[MAX_CURSOS]) {
+    for (int i = 0; i < MAX_CURSOS; i++) {
+        createList(&turnos[i], FALSE);
+    }
 }
 
-calcTurnos() {
-	/*
-		- Los alumnos que obtuvieron al menos 8 en EPA deberán ir a los turnos 1 ó 4.
-		- Los alumnos que obtuvieron entre 5 y 8 deberán ir a los turnos 2, 3 ó 5.
-		- Los alumnos que no alcanzaron la nota 5 no se les asignará turno en CADP.
-	*/
+int switchAbove8() {
+    static struct {
+        unsigned int value: 2;
+    } twoBitVar = {0};
+    twoBitVar.value = ~twoBitVar.value;
+    return twoBitVar.value;
+}
+
+int switchOthers() {
+    static struct {
+        unsigned int value: 3;
+    } threeBitVar = {1};
+    threeBitVar.value = threeBitVar.value << 1;
+    return threeBitVar.value;
+}
+
+void calcTurnos(ListAlumnos turnos[MAX_CURSOS], ListAlumnos lAlu) {
+    /*
+        - Los alumnos que obtuvieron al menos 8 en EPA deberán ir a los turnos 1 ó 4.
+        - Los alumnos que obtuvieron entre 5 y 8 deberán ir a los turnos 2, 3 ó 5.
+        - Los alumnos que no alcanzaron la nota 5 no se les asignará turno en CADP.
+    */
+    int index;
+    AlumnoNode *current = lAlu.head;
+    Alumno currentAlu;
+    int score;
+    AlumnoNode *auxPointer;
+
+    while (current != NULL)  {
+        currentAlu = current->data;
+        score = currentAlu.score;
+        if (score >= 8) {
+            // index turno 1 = 0, index urno 4 = 3
+            index = switchAbove8();
+            insertAtEnd(&turnos[index], currentAlu);
+        }
+        else if (score >= 5) {
+            // index turno 2,3,5 = 1,2,4
+            index = switchOthers();
+            insertAtEnd(&turnos[index], currentAlu);
+        }
+        auxPointer = current;
+        current = current->next;
+        free(auxPointer);
+    }
+}
+
+void printList(ListAlumnos list) {
+    AlumnoNode* current = list.head;
+    while (current != NULL) {
+        printf("DNI: ");
+        for (int i = 0; i < 10; i++) {
+            printf("%d", current->data.dni[i]);
+        }
+        printf(", Name: %s, Score: %d\n", current->data.name, current->data.score);
+        current = current->next;
+    }
+}
+void printTodo(ListAlumnos turnos[MAX_CURSOS]) {
+    for (int i = 0; i < MAX_CURSOS; i++) {
+        printf("Turno %d:\n", i + 1);
+        printList(turnos[i]);
+    }
+}
 
 int main() {
-    struct listAlumnos turnos[MAX_CURSOS];
-
-	createList(listAlumnos)
+    ListAlumnos turnos[MAX_CURSOS];
+    ListAlumnos lAlu;
+    createList(&lAlu, MAX_ALUMNOS);
 
     // Initialize the array of shifts
     initializeTurnos(turnos);
 
-    // Load the list of students from input
-    loadList(&turnos); // Example: Load students into the first shift
-
-    // Distribute students into different shifts based on criteria
-    // You need to implement the distribution logic here
+    // Calculate shifts for students
+    calcTurnos(turnos, lAlu);
 
     // Print the list of students for each shift
-    for (int i = 0; i < MAX_CURSOS; i++) {
-        printf("Turno %d:\n", i + 1);
-        // Print the list of students for this shift
-    }
+    printTodo(turnos);
 
     return 0;
 }
-
