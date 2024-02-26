@@ -3,7 +3,7 @@
 #include <string.h> // Include string.h for string functions
 
 #define MAX_PART 5000
-#define MIN_INSCR 50
+#define MIN_INSCR 1000
 #define CANT_CAT 5
 #define MAX_NAME_LENGTH 64
 #define TRUE 1
@@ -17,8 +17,11 @@ typedef struct participante {
 } Participante;
 
 typedef struct counter {
-    int counter[CANT_CAT];
+    int len[CANT_CAT];
+	int index[CANT_CAT][MAX_PART];
 } Counter;
+
+typedef Participante ArrFinalType[CANT_CAT][MAX_PART]; // Typedef for arrFinal
 
 // Function to generate a random integer between min and max
 int getRandomInt(int min, int max) {
@@ -49,33 +52,63 @@ Participante generateParticipante() {
 }
 
 // Function to count participants in each category
-Counter countParticipants(Participante arrInscripciones[], int n) {
+Counter countParticipants(Participante arrInscripciones[]) {
     Counter counter = {{0}};
-    for (int i = 0; i < n; i++) {
-        counter.counter[arrInscripciones[i].categoria - 1]++; // Adjusting index to start from 0
+    for (int i = 0; i < MAX_PART; i++) {
+        counter.len[arrInscripciones[i].categoria - 1]++; // Adjusting index to start from 0
     }
     return counter;
 }
 
+void procInfo(Participante arrInsc[], Counter counter, Participante arrFinal[CANT_CAT][MAX_PART]) {
+    // Iterate over each participant
+	int indexFinal = 0;
+    for (int cat = 0; cat < CANT_CAT; cat++) {
+		int lenCat = counter.len[cat];
+		if (lenCat >= MIN_INSCR) {
+			for (int part = 0; part < lenCat; part++) {
+				arrFinal[indexFinal][part] = arrInsc[counter.index[cat][part]];
+			}
+			indexFinal++;
+		}
+	}
+}
+void printFinalArraySizes(Participante arrFinal[CANT_CAT][MAX_PART]) {
+    for (int cat = 0; cat < CANT_CAT; cat++) {
+        int size = 0;
+        // Count the number of valid elements in the current category
+        for (int i = 0; i < MAX_PART; i++) {
+            if (arrFinal[cat][i].categoria != 0) { // Check if the element is valid
+                size++;
+            } else {
+                break; // No need to continue counting if we encounter an invalid element
+            }
+        }
+        printf("Category %d final array size: %d\n", cat + 1, size);
+    }
+}
+
+
 // Main function
 int main() {
     Participante arrInscripciones[MAX_PART]; // Array to hold participants
-    int n = 100; // Number of participants, change as needed
+	Participante arrFinal[CANT_CAT][MAX_PART];
     srand(1); // Seed the random number generator for reproducibility
 
     // Generating random participants
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < MAX_PART; i++) {
         arrInscripciones[i] = generateParticipante();
     }
 
     // Counting participants in each category
-    Counter counter = countParticipants(arrInscripciones, n);
+    Counter counter = countParticipants(arrInscripciones);
 
     // Printing counts for each category
     for (int i = 0; i < CANT_CAT; i++) {
-        printf("Category %d count: %d\n", i + 1, counter.counter[i]);
+        printf("Category %d count: %d\n", i + 1, counter.len[i]);
     }
-
-    return 0;
+    procInfo(arrInscripciones, counter, arrFinal);
+    printFinalArraySizes(arrFinal);
+	return 0;
 }
 
