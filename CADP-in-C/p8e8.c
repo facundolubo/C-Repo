@@ -1,8 +1,22 @@
+/*
+ *
+ *
+ La cátedra de CADP está organizando la cursada para el año 2019. Para ello, dispone de una lista con
+todos los alumnos que cursaron EPA. De cada alumno se conoce su DNI, apellido, nombre y la nota obtenida.
+Escribir un programa que procese la información de alumnos disponible y los distribuya en turnos utilizando
+los siguientes criterios:
+- Los alumnos que obtuvieron al menos 8 en EPA deberán ir a los turnos 1 ó 4.
+- Los alumnos que obtuvieron entre 5 y 8 deberán ir a los turnos 2, 3 ó 5.
+- Los alumnos que no alcanzaron la nota 5 no se les asignará turno en CADP.
+Al finalizar, el programa debe imprimir en pantalla la lista de alumnos para cada turno.
+Nota: La distribución de alumnos debe ser lo más equitativa posible.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_NAME_LENGTH 64
-#define MAX_CURSOS 5 // Maximum number of shifts
+#define MAX_CURSOS 5 
 #define MAX_ALUMNOS 128
 #define TRUE 1
 #define FALSE 0
@@ -121,10 +135,14 @@ int switchAbove8() {
 int switchOthers() {
     static struct {
         unsigned int value: 3;
-    } threeBitVar = {1};
-    threeBitVar.value = threeBitVar.value << 1;
+    } threeBitVar = {0};
+	threeBitVar.value = 1 << threeBitVar.value;
+    if (threeBitVar.value == 0) {
+		threeBitVar.value = 1 << threeBitVar.value;
+	}
     return threeBitVar.value;
 }
+
 
 void calcTurnos(ListAlumnos turnos[MAX_CURSOS], ListAlumnos lAlu) {
     /*
@@ -141,14 +159,17 @@ void calcTurnos(ListAlumnos turnos[MAX_CURSOS], ListAlumnos lAlu) {
     while (current != NULL)  {
         currentAlu = current->data;
         score = currentAlu.score;
+        //printf("Actual score: %d\n", score); // Corrected printf format specifier
         if (score >= 8) {
-            // index turno 1 = 0, index urno 4 = 3
-            index = switchAbove8();
+            // index turno 1 = 0, index turno 4 = 3
+            //index = switchAbove8();
+            printf("%d\n", index);
             insertAtEnd(&turnos[index], currentAlu);
         }
         else if (score >= 5) {
             // index turno 2,3,5 = 1,2,4
             index = switchOthers();
+            printf("%d\n", index);
             insertAtEnd(&turnos[index], currentAlu);
         }
         auxPointer = current;
@@ -159,6 +180,7 @@ void calcTurnos(ListAlumnos turnos[MAX_CURSOS], ListAlumnos lAlu) {
 
 void printList(ListAlumnos list) {
     AlumnoNode* current = list.head;
+    printf("Length: %d\n", list.length);
     while (current != NULL) {
         printf("DNI: ");
         for (int i = 0; i < 10; i++) {
