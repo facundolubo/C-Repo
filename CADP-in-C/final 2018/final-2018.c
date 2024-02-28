@@ -32,6 +32,7 @@ char getRandomChar() {
 }
 
 VectorChar createArray() {
+    printf("\n");
     VectorChar vChar;
     vChar.len = 0;
 
@@ -78,17 +79,23 @@ CharCounter initCounter() {
 }
 
 void printArr(VectorChar *vChar) {
-    printf("Array of characters:\n");
+	printf("\n");
+    printf("Array of characters: \n");
     for (int i = 0; i < vChar->len; i++) {
-        printf("%c", vChar->arrChar[i]);
+        printf("%c ", vChar->arrChar[i]);
     }
     printf("\n");
 }
 
 void printCounter(CharCounter *counter) {
+    printf("\n");
     printf("Counter len: %d\n", counter->totalLen);
     for (int i = 0; i < counter->totalLen; i++) {
-        printf("%c: %d\n", counter->c[i], counter->len[i]);
+        printf("%c ", counter->c[i]);
+    }
+	printf("\n");
+	for (int i = 0; i < counter->totalLen; i++) {
+        printf("%d ", counter->len[i]);
     }
 }
 
@@ -108,10 +115,10 @@ void proc_info(VectorChar vChar, CharCounter *counter) {
 }
 
 int main() {
+	printf("Magic number: %d", (ASCII_z - ASCII_A) - (ASCII_a - ASCII_Z));
     VectorChar vChar = createArray();
     CharCounter counter = initCounter();
     printArr(&vChar);
-    printCounter(&counter);
     proc_info(vChar, &counter);
     printCounter(&counter);
     return 0;
