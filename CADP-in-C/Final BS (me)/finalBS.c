@@ -44,8 +44,8 @@ Fact createFact(int codClient, int month) {
 	return fact;
 }
 
-void insertFact(FactArr *arr Fact fact) {
-	arr.arr[arr.dimL] = createFact();
+void insertFact(FactArr *arr Fact fact, int codClient, int month) {
+	arr.arr[arr.dimL] = createFact(codClient, month);
 	arr.dimL++;
 }
 
@@ -55,7 +55,7 @@ FactArr createSortedArray(int month) {
 		for (int cli = 0; cli < APRIL_MIN_COD - 1; cli++) {
 			cantFact = getRandomInt(MIN_FACT, MAX_FACT);
 			for (int i = 0; i < cantFact; i++) {
-				insertFact(&arr);
+				insertFact(&arr, cli, month);
 			}
 		}
 	}
@@ -63,19 +63,39 @@ FactArr createSortedArray(int month) {
 		for (int cli = APRIL_MIN_COD; cli < APRIL_MAX_COD; cli++) {
 			cantFact = getRandomInt(MIN_FACT, MAX_FACT);
 			for (int i = 0; i < cantFact; i++) {
-				insertFact(&arr);
+				insertFact(&arr, cli, month);
 			}
 		}
 	}
 	return arr;
 }
-int binarySearch(FactArr arr) {
-
+int binarySearch(FactArr arr, int cod) {
+	int pos = -1;
+	int left = 1;
+	int right = arr.dimL;
+	int mid = left + right / 2 
+	while ((left <= right) && (cod != arr.arr[mid])  {
+		if (arr[mid] < cod) {
+			right = mid - 1;
+		}
+		else {
+			left = mid + 1;
+		}
+		int mid = left + right / 2 
+	}
+	if ((left <= right) && (cod == arr.arr[mid])) {
+		pos = arr.arr[mid];		
+	}
 	return pos;
 }
 int findInitPos() {
-	int pos = binarySearch();
-	return initPos;
+	int pos = binarySearch(arr, APRIL_MIN_COD);
+	actFact = arr[pos];
+	while (arr[actPos] == act.Fact) {
+		pos--;
+	}
+	initPos = pos + 1;
+	return initPos
 }
 int findEndPos() {
 	return endPos;
@@ -84,6 +104,7 @@ int findEndPos() {
 append(){
 	return arr
 }
+
 shift(end, start) {
 	return arr
 }
@@ -91,9 +112,11 @@ shift(end, start) {
 FactArr proc_todo (FactArr *arrMar, *arrApr, *arrTodo) {
 	return arr
 }
+
 printFact (Fact c) {
-	printf("Facte %d. Mes: %d\n", c.cod, c.month)
+	printf("Fact %d. Mes: %d\n", c.cod, c.month)
 }
+
 printArray (FactArr arr) {
 	for (int i = 0; i < arr.dimL; i++) {
 		printFact(arr.arr[i]);
