@@ -5,7 +5,7 @@
  * en las de marzo. Voy a intentar hacerlo con BS.
  * Es clave entender que puede haber más de una factura por cliente, por ende, no alcanza con encontrar el facte que limita mar/apr debido a que habría que encontrar su primer factura además.
  * Digamos que hay max 3500 facturas y un total de 350 clientes. Hay que agarrar las facturas de abril de los clientes 
- * 150 a 350 e insertarlas en las de marzo.
+ * 150 a 350 e insertarlas en las de marzo.Supondremos que esos clientes de abril faltan en marzo.
  * Para crear las facturas voy a suponer que un cliente puede tener un random de 0 a 10 facturas.
  */
 
@@ -13,28 +13,28 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define CANT_FACT = 3500
-#define CANT_CLIENTES = 350
-#define MARCH = 3
-#define APRIL = 4
-#define MIN_FACT = 0
-#define MAX_FACT = 10
-#define APRIL_MIN_COD = 150 //random min
-#define APRIL_MAX_COD = 350 //random max
+#define CANT_FACT 3500
+#define CANT_CLIENTES 350
+#define MARCH 3
+#define APRIL 4
+#define MIN_FACT 0
+#define MAX_FACT 10
+#define APRIL_MIN_COD 150 //random min
+#define APRIL_MAX_COD 350 //random max
 
-typdef struct fact {
+typedef struct fact {
 	int client;
 	int month;
 } Fact;
 
-typdef struct factArr {
+typedef struct factArr {
 	Fact arr[CANT_FACT];
 	int dimL;
 } FactArr;
 
 int getRandomInt(int min, int max) {
-	static int range = max - min;
-	return min + rand() % (range + 1)
+	int range = max - min;
+	return min + rand() % (range + 1);
 }
 
 Fact createFact(int codClient, int month) {
@@ -44,92 +44,123 @@ Fact createFact(int codClient, int month) {
 	return fact;
 }
 
-void insertFact(FactArr *arr Fact fact, int codClient, int month) {
+FactArr insertFact(FactArr arr, int codClient, int month) {
 	arr.arr[arr.dimL] = createFact(codClient, month);
 	arr.dimL++;
+	return arr;
 }
 
 FactArr createSortedArray(int month) {
 	FactArr arr; 
-	if (month = MARCH) {
+	arr.dimL = 0;
+	if (month == MARCH) {
+		//printf("Month: %d", month);
 		for (int cli = 0; cli < APRIL_MIN_COD - 1; cli++) {
-			cantFact = getRandomInt(MIN_FACT, MAX_FACT);
+			int cantFact = getRandomInt(MIN_FACT, MAX_FACT);
+			//printf("cantFact: %d", cantFact);
 			for (int i = 0; i < cantFact; i++) {
-				insertFact(&arr, cli, month);
+				arr = insertFact(arr, cli, month);
 			}
 		}
 	}
-	if (month = APRIL) {
-		for (int cli = APRIL_MIN_COD; cli < APRIL_MAX_COD; cli++) {
-			cantFact = getRandomInt(MIN_FACT, MAX_FACT);
+	if (month == APRIL) {
+		//printf("Month: %d", month);
+		for (int cli = 0; cli < APRIL_MAX_COD; cli++) {
+			int cantFact = getRandomInt(MIN_FACT, MAX_FACT);
+			//printf("cantFact: %d", cantFact);
 			for (int i = 0; i < cantFact; i++) {
-				insertFact(&arr, cli, month);
+				arr = insertFact(arr, cli, month);
+			//	printf("Factura insertada...");
 			}
 		}
 	}
 	return arr;
 }
+
 int binarySearch(FactArr arr, int cod) {
-	int pos = -1;
-	int left = 1;
-	int right = arr.dimL;
-	int mid = left + right / 2 
-	while ((left <= right) && (cod != arr.arr[mid])  {
-		if (arr[mid] < cod) {
-			right = mid - 1;
-		}
-		else {
-			left = mid + 1;
-		}
-		int mid = left + right / 2 
-	}
-	if ((left <= right) && (cod == arr.arr[mid])) {
-		pos = arr.arr[mid];		
-	}
-	return pos;
+    int pos = -1;
+    int left = 0;
+    int right = arr.dimL - 1;
+
+    while (left <= right && pos == -1) {
+        int mid = left + (right - left) / 2;
+
+        if (arr.arr[mid].client == cod) {
+            pos = mid;
+        } else if (arr.arr[mid].client < cod) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return pos;
 }
-int findInitPos() {
+
+
+int findInitPos(FactArr arr) {
 	int pos = binarySearch(arr, APRIL_MIN_COD);
-	actFact = arr[pos];
-	while (arr[actPos] == act.Fact) {
+	Fact actFact = arr.arr[pos];
+	while (arr.arr[pos].client == actFact.client) {
 		pos--;
 	}
-	initPos = pos + 1;
-	return initPos
+	int initPos = pos;
+	printf("Init Pos: %d\n", initPos);
+	return initPos;
 }
-int findEndPos() {
+
+int findEndPos(FactArr arr) {
+	int endPos = arr.dimL;
+	printf("End Pos: %d\n", endPos);
 	return endPos;
 }
 
-append(){
-	return arr
+FactArr merge(FactArr arrMar, FactArr arrApr){
+	FactArr mergedArr;
+	mergedArr.dimL = 0;
+	printf("Dim Log of arrMar %d\n", arrMar.dimL);
+	printf("Dim Log of arrApr %d\n", arrApr.dimL);
+	for (int i = 0; i < arrMar.dimL; i++) {
+		mergedArr.arr[i] = arrMar.arr[i];
+		mergedArr.dimL++;
+	}
+	printf("Marzo copiado...\n");
+	int endPos = findEndPos(arrApr);
+	int initPos = findInitPos(arrApr);
+	for (int i = initPos, j = mergedArr.dimL; i < endPos; i++, j++) {
+		mergedArr.arr[j] = arrApr.arr[i];
+		mergedArr.dimL++;
+	}
+	printf("Abril copiado...\n");
+	printf("Dim Log of arrFinal %d\n", mergedArr.dimL);
+	return mergedArr;
 }
 
-shift(end, start) {
-	return arr
-}
- 
-FactArr proc_todo (FactArr *arrMar, *arrApr, *arrTodo) {
-	return arr
+void printFact (Fact c) {
+	printf("Fact %d. Mes: %d ", c.client, c.month);
 }
 
-printFact (Fact c) {
-	printf("Fact %d. Mes: %d\n", c.cod, c.month)
-}
-
-printArray (FactArr arr) {
+void printArray (FactArr arr) {
+	printf("Print array of dimL: %d\n", arr.dimL);
 	for (int i = 0; i < arr.dimL; i++) {
 		printFact(arr.arr[i]);
 	}
+	printf("\n");
 }
 int main () {
     srand(time(NULL));
-	FactArr vecFacturas[CANT_FACT];
 	FactArr vecFactMar = createSortedArray(MARCH);
 	FactArr vecFactApr = createSortedArray(APRIL);
 	printArray(vecFactMar);
+	printf("\n");
+	printf("\n");
 	printArray(vecFactApr);
-	procTodo (&vecFactMar, &vecFactApr, &vecFacturas);
-	printArray(vecFacturas);
-	return 0
+	printf("\n");
+	printf("\n");
+	FactArr vectFactFinal = merge(vecFactMar, vecFactApr);
+	printf("\n");
+	printf("\n");
+	printArray(vectFactFinal);
+
+	return 0;
 }
