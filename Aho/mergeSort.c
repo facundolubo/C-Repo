@@ -54,16 +54,16 @@ void printList(IntList list) {
     }
 }
 
-IntList merge(IntList list1, IntList, list2) {
-	IntList list;
-	if (list1 == NULL) {
+IntNode merge(IntList list1, IntList list2) {
+	IntNode list;
+	if (list1.head == NULL) {
 		list = list2;
 	}
-	else if (list2 == NULL) {
+	else if (list2.head == NULL) {
 		list = list1;
 	}
-	else if (list1->data <= list2->data) {
-		list1->next = merge(list1->next, list2);
+	else if (list1.head->data <= list2.head->data) {
+		list1->next = merge(list1.head->next, list2);
 		list = list1;
 	}
 	else {
@@ -75,8 +75,13 @@ IntList merge(IntList list1, IntList, list2) {
 
 int main() {
     // Create a linked list
-    IntList list = createList(DIML);
+    IntList list1 = createList(DIML);
+    IntList list2 = createList(DIML);
     // Print the list
-    printList(list);
+    printList(list1);
+    printList(list2);
+    merge(list1.head,list2.head);
+    printList(list1);
+    printList(list2);
     return 0;
 }
