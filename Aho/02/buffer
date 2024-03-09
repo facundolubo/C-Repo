@@ -1,0 +1,71 @@
+/*
+ * Write a recursive function "add" that takes an argument of type LIST and returns the sum of the elements.
+ */
+
+#define <stdio.h>
+#define MAX 100
+#define MIN 0
+#define CANT 10
+
+typedef struct Node {
+	int num;
+	struct List *next;
+} Node;
+
+typedef *Node List;
+
+int randomInt(int max, int min) {
+	int range = max - min;
+	return min + rand() % range;
+}
+
+Node* createNode() {
+	Node* new = malloc(sizeof(Node));
+	new->num = randomInt(MAX,MIN);
+	new->next = NULL;
+	return new;
+}
+
+List initList(List *list) {
+	list = NULL;	
+}
+
+void insertBeggining(List *list, int num) {
+	Node *new = createNode();
+	if (*list != NULL) {
+		new->next = *list;
+		*list = new;
+	}
+}
+
+List createList(int CANT) {
+	List list = initList();
+	for (int i = 0; i < CANT; i++) {
+		insertBeggining(&list);
+	}
+}
+void printList(List l) {
+	List aux = l;
+	// chequear si anda con cant = 1
+	while (aux l->next != null) {
+		printf("%d\n", l->num);
+		l = l->next;
+	}
+}
+int add(List l) {
+	int res = 0;
+	while (l->next != NULL) {
+		res += l->num;
+		l = l->next;
+	}
+	return res;
+}
+
+int main() {
+	List list = createList();
+	printList(list);
+	printf("%d\n", add(list));	
+	printList(list);
+	return 0;
+}
+
