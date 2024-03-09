@@ -13,16 +13,17 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define CANT_FACT 3500
-#define CANT_CLIENTES 350
+#define CANT_FACT 350
+#define CANT_CLIENTES 35
 #define MARCH 3
 #define APRIL 4
 #define MIN_FACT 0
-#define MAX_FACT 10
-#define APRIL_MIN_COD 150 //random min
-#define APRIL_MAX_COD 350 //random max
+#define MAX_FACT 3
+#define APRIL_MIN_COD 15 //random min
+#define APRIL_MAX_COD 35 //random max
 
 typedef struct fact {
+	int id;
 	int client;
 	int month;
 } Fact;
@@ -38,9 +39,12 @@ int getRandomInt(int min, int max) {
 }
 
 Fact createFact(int codClient, int month) {
+	int static n = 1;
 	Fact fact;
+	fact.id = n;
 	fact.client = codClient;
 	fact.month = month;
+	n++;
 	return fact;
 }
 
@@ -84,7 +88,6 @@ int binarySearch(FactArr arr, int cod) {
 
     while (left <= right && pos == -1) {
         int mid = left + (right - left) / 2;
-
         if (arr.arr[mid].client == cod) {
             pos = mid;
         } else if (arr.arr[mid].client < cod) {
@@ -93,13 +96,27 @@ int binarySearch(FactArr arr, int cod) {
             right = mid - 1;
         }
     }
-
     return pos;
 }
 
-
+int binarySearch2 (FactArr arr, int cod) {
+	int pos = -1;
+	int low = 0;
+	int high = arr.dimL -1;
+	while (low != high) {
+        int mid = (low + high) / 2;
+		if (cod < arr.arr[mid].client) {
+			high = mid - 1;
+		}
+		else low = mid;
+	}
+	if (arr.arr[low].client == cod) {
+		pos = low;
+	}
+	return pos;
+}
 int findInitPos(FactArr arr) {
-	int pos = binarySearch(arr, APRIL_MIN_COD);
+	int pos = binarySearch2(arr, APRIL_MIN_COD);
 	Fact actFact = arr.arr[pos];
 	while (arr.arr[pos].client == actFact.client) {
 		pos--;
@@ -137,7 +154,7 @@ FactArr merge(FactArr arrMar, FactArr arrApr){
 }
 
 void printFact (Fact c) {
-	printf("Fact %d. Mes: %d ", c.client, c.month);
+	printf("Id %d. Client %d. Mes: %d\n", c.id, c.client, c.month);
 }
 
 void printArray (FactArr arr) {
