@@ -6,37 +6,35 @@
 #define MIN 0
 #define CANT_LIST 10
 
+
+typedef struct Node* List;
+
 typedef struct Node {
     int num;
-    struct Node *next;
+    List next;
 } Node;
-
-typedef Node *List;
 
 int randomInt(int max, int min) {
     int range = max - min;
     return min + rand() % range;
 }
 
-Node *createNode() {
-    Node *newNode = malloc(sizeof(Node));
-    if (newNode != NULL) {
-        newNode->num = randomInt(MAX, MIN);
-        newNode->next = NULL;
-    }
+Node* createNode() {
+    Node *newNode = (Node*)malloc(sizeof(Node)); // Allocate memory for the new node
+	newNode->num = randomInt(MAX, MIN);
+	newNode->next = NULL; // Assuming 'next' is a pointer in Node struct
     return newNode;
 }
 
 List initList() {
-    return NULL;
+	List list = NULL;
+    return list;
 }
 
 void insertBeginning(List *list) {
-    Node *newNode = createNode();
-    if (newNode != NULL) {
-        newNode->next = *list;
-        *list = newNode;
-    }
+    Node *newNode = createNode(); // Allocate memory for a new node
+    newNode->next = *list; // Link the new node to the current head of the list
+    *list = newNode; // Update the list pointer to point to the new node
 }
 
 List createList(int n) {
