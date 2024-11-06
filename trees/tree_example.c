@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+
+#define NL printf("\n")
 
 typedef struct TreeNode {
     int data;
@@ -7,7 +10,7 @@ typedef struct TreeNode {
     struct TreeNode* right;
 } TreeNode;
 
-TreeNode* new_node(int data) {
+TreeNode* newNode(int data) {
     TreeNode* n = malloc(sizeof(TreeNode));
     n->data = data;
     n->left = NULL;
@@ -15,27 +18,43 @@ TreeNode* new_node(int data) {
     return n;
 }
 
-TreeNode * insertNode (*TreeNode T, int data) {
+TreeNode * insertNode (TreeNode * T, int data) {
+	printf("Call to insertNode");
+	NL;
+	printf("Data to insert: %d", data);
+	NL;
 	if (T == NULL) {
-		new_node(data);
+		return newNode(data);
 	}
 	else {
-		if (data < T->data) insertNode(T->left, data);
-		else insertNode(T->right, data);
+		if (data < T->data) T->left = insertNode(T->left, data);
+		else T->right = insertNode(T->right, data);
+	}
+	return T;
+}
+
+void printTree (TreeNode * T) {
+	if (T != NULL) {
+		printTree(T->left);
+		printf("%d", T->data);
+		NL;
+		printTree(T->right);
 	}
 }
 
-void printTree
-//    0
-//   / \
-//  1  2
 int main(int argc, char* argv[]) {
-    TreeNode* root = new_node(0);
-    root->left = new_node(1);
-    root->right = new_node(2);
-
-    printf("Root value is %d\n", root->data);
-    printf("Left descendant of root is %d\n", root->left->data);
-    printf("Right descendant of root is %d\n", root->right->data);
+	/* The program receives an integer as the only parameter, otherwise it doesn't work properly */
+	srand(time(NULL));
+	int i = 0;
+	int num = atoi(*++argv) % 64;
+	TreeNode * tree = NULL;
+	printf("Random number: %d", num);
+	NL;
+	for (;i < num; i++) {
+		tree = insertNode(tree, rand()% 64);
+	}
+	NL;
+	printTree(tree);
+	NL;
     return 0;
 }
